@@ -73,13 +73,12 @@ let myserver = http.createServer(function (req, res) {
 function check(query, res)
 {
 	//check if there is an availble day and time
-	if (availableTimes.some(element => element == query.day && element[query.day] == query.time))
-	//if (checkElement(availableTimes, query.day) && checkElement(availableTimes[query.day], query.time))
-	{
-		//if (availableTimes[query.day].some(element => element == query.time))
-		sendResponse(200, "Available", res);
-		return;
-	}
+	if (availableTimes[query.day] != undefined)
+		if (availableTimes[query.day].some(time => time == query.time))
+		{
+			sendResponse(200, "Available", res);
+			return;
+		}
 	else
 		sendResponse(404, "Not Available", res);
 }
