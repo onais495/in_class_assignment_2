@@ -1,4 +1,6 @@
-url = require('url');
+const http = require('http');
+const url = require('url');
+
 const availableTimes = {
     Monday: ["1:00", "1:30", "2:00", "2:30", "3:00", "3:30", "4:00", "4:30"],
     Tuesday: ["1:00", "1:30", "2:00", "2:30", "3:00", "3:30", "4:00", "4:30"],
@@ -9,56 +11,57 @@ const availableTimes = {
 const appointments = [
     {name: "James", day: "Wednesday", time: "3:30" },
     {name: "Lillie", day: "Friday", time: "1:00" }];
-const http = require('http');
+
 //create a server object:
 let myserver = http.createServer(function (req, res) {
-//parse the URL
-let parsedURL = url.parse(req.url, true);
-//Store the parsed query in query
-const query = parsedURL.query;
-const pathName = parsedURL.pathname;
 
-//We can either use if else or switch
+	//parse the URL
+	let parsedURL = url.parse(req.url, true);
+	//Store the parsed query in query
+	const query = parsedURL.query;
+	const pathName = parsedURL.pathname;
 
-/*if (pathName == "/schedule")
-	schedule();
-else if  (pathName == "/cancel")
-	cancel();
-else 
-	error();*/
+	//We can either use if else or switch
 
-switch (pathName){
-	case "/schedule":
-		if (query.name != undefined && query.day != undefined && query.time != undefined)
-		{
-			schedule(query, res);
-		}
-		else
-			sendResponse(400, "Day, time and name required for scheduling appointment", res);
-		break;
-	case "/cancel":
-		if (query.name != undefined && query.day != undefined && query.time != undefined)
-		{
-			cancel(query, res);
-		}
-		else
-			sendResponse(400, "Day, time and name required for cancelling appoitment", res);
-		break;
-	case "/check":
-		if (query.day != undefined && query.time != undefined)
-		{
-			check(query, res);
-		}
-		else
-			sendResponse(400, "Day and time required to check available appointments", res);
-		break;
-	default:
-		sendResponse(404, "pathname unknown", res);
-}
-/*res.writeHead(200, {'Content-Type': 'text/html'});
-res.write(`<html> <body> <p> <strong> Received </strong> </p> </body> </html>`); //write (send) a response to the clien
-console.log(req.url);*/
-}
+	/*if (pathName == "/schedule")
+		schedule();
+	else if  (pathName == "/cancel")
+		cancel();
+	else 
+		error();*/
+
+	switch (pathName){
+		case "/schedule":
+			if (query.name != undefined && query.day != undefined && query.time != undefined)
+			{
+				schedule(query, res);
+			}
+			else
+				sendResponse(400, "Day, time and name required for scheduling appointment", res);
+			break;
+		case "/cancel":
+			if (query.name != undefined && query.day != undefined && query.time != undefined)
+			{
+				cancel(query, res);
+			}
+			else
+				sendResponse(400, "Day, time and name required for cancelling appoitment", res);
+			break;
+		case "/check":
+			if (query.day != undefined && query.time != undefined)
+			{
+				check(query, res);
+			}
+			else
+				sendResponse(400, "Day and time required to check available appointments", res);
+			break;
+		default:
+			sendResponse(404, "pathname unknown", res);
+	}
+	/*res.writeHead(200, {'Content-Type': 'text/html'});
+	res.write(`<html> <body> <p> <strong> Received </strong> </p> </body> </html>`); //write (send) a response to the clien
+	console.log(req.url);*/
+	}
 );
 
 //This function will check if there is availble day or time in availbleTimes
@@ -108,6 +111,7 @@ function schedule(query, res)
 				availableTimes[query.day].splice(i, 1);
 				appointments.push({name: query.name, day: query.day, time: query.time});
 				sendResponse(200, "Reserved", res);
+				return;
 			}
 		}
 		
