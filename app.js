@@ -47,16 +47,16 @@ console.log(req.url);*/
 );
 
 //This function will check if there is availble day or time in availbleTimes
-function checkElement(available, query)
+/*function checkElement(available, query)
 {
 	return available.some(element => element == query);
-}
+}*/
 
 function check(query, res)
 {
 	//check if there is an availble day and time
-	//if (availableTimes.some(element => element == query.day))
-	if (checkElement(availableTimes, query.day) && checkElement(availableTimes[query.day], query.time))
+	if (availableTimes.some(element => element == query.day && element[query.day] == query.time))
+	//if (checkElement(availableTimes, query.day) && checkElement(availableTimes[query.day], query.time))
 	{
 		//if (availableTimes[query.day].some(element => element == query.time))
 		sendResponse(200, "Available", res);
@@ -67,37 +67,38 @@ function check(query, res)
 	
 
 //This function will send a response to the user
-function sendResponse(status, message, res){
-res.writeHead(status, {'Content-Type': 'text/plain'});
-res.write(message); //write (send) a response to the clien
-res.end();
+function sendResponse(status, message, res)
+{
+	res.writeHead(status, {'Content-Type': 'text/plain'});
+	res.write(message); //write (send) a response to the clien
+	res.end();
 }
 
 function schedule(query, res)
 {
-//alternate way to write the function
-/*
-	if availableTimes[query.day].some(function (element) {
-return element == queryObj.time;
-})
-}*/
+	//alternate way to write the function
+	/*
+		if availableTimes[query.day].some(function (element) {
+	return element == queryObj.time;
+	})
+	}*/
 
-//if (availableTimes[query.day].some(element => element == query.time))
-if (checkElement(availableTimes[query.day], query.time))
-{
-	for (let i = 0; i < availableTimes[query.day].length; i++)
+	if (availableTimes[query.day].some(element => element == query.time))
+	//if (checkElement(availableTimes[query.day], query.time))
 	{
-		if (availableTimes[query.day][i] == query.time);
+		for (let i = 0; i < availableTimes[query.day].length; i++)
 		{
-			availableTimes[query.day].splice(i, 1);
-			appointments.push({name: query.name, day: query.day, time: query.time});
-			sendResponse(200, "Reserved", res);
+			if (availableTimes[query.day][i] == query.time);
+			{
+				availableTimes[query.day].splice(i, 1);
+				appointments.push({name: query.name, day: query.day, time: query.time});
+				sendResponse(200, "Reserved", res);
+			}
 		}
+		
 	}
-	
-}
-else
-	sendResponse(404, "Could not schedule", res);
+	else
+		sendResponse(404, "Could not schedule", res);
 
 }
 
@@ -112,7 +113,6 @@ function cancel(query, res)
 				availableTimes[query.day].push(query.time);
 				console.log(availableTimes);
 				sendResponse(200, "Appointment has been cancelled", res);
-				return;
 			}
 		}
 		else
