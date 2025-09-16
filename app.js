@@ -78,6 +78,7 @@ function check(query, res)
 	{
 		//if (availableTimes[query.day].some(element => element == query.time))
 		sendResponse(200, "Available", res);
+		return;
 	}
 	else
 		sendResponse(404, "Not Available", res);
@@ -132,6 +133,7 @@ function cancel(query, res)
 				availableTimes[query.day].push(query.time);
 				console.log(availableTimes);
 				sendResponse(200, "Appointment has been cancelled", res);
+				return;
 			}
 		}
 		else
