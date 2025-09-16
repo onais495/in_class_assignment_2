@@ -133,6 +133,7 @@ function cancel(query, res)
 			{
 				appointments.splice(i, 1);
 				availableTimes[query.day].push(query.time);
+				console.log(appointments);
 				console.log(availableTimes);
 				sendResponse(200, "Appointment has been cancelled", res);
 				return;
