@@ -109,7 +109,10 @@ function schedule(query, res)
 		{
 			if (availableTimes[query.day][i] == query.time);
 			{
+				console.log("i "+i);
+				console.log(availableTimes[query.day][i])
 				availableTimes[query.day].splice(i, 1);
+				console.log("length "+availableTimes[query.day].length);
 				appointments.push({name: query.name, day: query.day, time: query.time});
 				console.log(appointments);
 				console.log(availableTimes);
