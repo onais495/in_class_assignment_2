@@ -77,6 +77,7 @@ function check(query, res)
 		if (availableTimes[query.day].some(time => time == query.time))
 		{
 			sendResponse(200, "Available", res);
+			console.log(availableTimes);
 			return;
 		}
 	else
@@ -110,6 +111,8 @@ function schedule(query, res)
 			{
 				availableTimes[query.day].splice(i, 1);
 				appointments.push({name: query.name, day: query.day, time: query.time});
+				console.log(appointments);
+				console.log(availableTimes);
 				sendResponse(200, "Reserved", res);
 				return;
 			}
