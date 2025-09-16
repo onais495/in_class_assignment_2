@@ -38,7 +38,7 @@ switch (pathName){
 		check(query, res);
 		break;
 	default:
-		sendResponse(404, "pathname not found", res);
+		sendResponse(404, "pathname unknown", res);
 }
 /*res.writeHead(200, {'Content-Type': 'text/html'});
 res.write(`<html> <body> <p> <strong> Received </strong> </p> </body> </html>`); //write (send) a response to the clien
@@ -83,7 +83,7 @@ function schedule(query, res)
 	})
 	}*/
 
-	if (availableTimes[query.day].some(element => element == query.time))
+	if (availableTimes[query.day].some(time => time == query.time))
 	//if (checkElement(availableTimes[query.day], query.time))
 	{
 		for (let i = 0; i < availableTimes[query.day].length; i++)
