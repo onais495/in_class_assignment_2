@@ -107,9 +107,11 @@ function schedule(query, res)
 	{
 		for (let i = 0; i < availableTimes[query.day].length; i++)
 		{
-			if (availableTimes[query.day][i] == query.time);
+			if (availableTimes[query.day][i] == query.time)
 			{
 				console.log("i "+i);
+				console.log("q time "+query.time);
+				console.log()
 				console.log(availableTimes[query.day][i])
 				availableTimes[query.day].splice(i, 1);
 				console.log("length "+availableTimes[query.day].length);
