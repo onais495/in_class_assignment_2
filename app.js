@@ -29,13 +29,28 @@ else
 
 switch (pathName){
 	case "/schedule":
-		schedule(query, res);
+		if (query.name != undefined && query.day != undefined && query.time != undefined)
+		{
+			schedule(query, res);
+		}
+		else
+			sendResponse(400, "Day, time and name required for scheduling appointment", res);
 		break;
 	case "/cancel":
-		cancel(query, res);
+		if (query.name != undefined && query.day != undefined && query.time != undefined)
+		{
+			cancel(query, res);
+		}
+		else
+			sendResponse(400, "Day, time and name required for cancelling appoitment", res);
 		break;
 	case "/check":
-		check(query, res);
+		if (query.day != undefined && query.time != undefined)
+		{
+			check(query, res);
+		}
+		else
+			sendResponse(400, "Day and time required to check available appointments", res);
 		break;
 	default:
 		sendResponse(404, "pathname unknown", res);
