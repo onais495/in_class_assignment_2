@@ -26,7 +26,7 @@ let myserver = http.createServer(function (req, res) {
 	//or unknown pathnames
 	switch (pathName){
 		case "/schedule":
-		if (query.name != undefined && query.day != undefined && query.time != undefined)
+		if (validateQuery(query, true))
 		{
 			schedule(query, res);
 		}
@@ -34,7 +34,7 @@ let myserver = http.createServer(function (req, res) {
 			sendResponse(404, "Day, time and name required.", res);
 		break;
 		case "/cancel":
-		if (query.name != undefined && query.day != undefined && query.time != undefined)
+		if (validateQuery(query, true))
 		{
 			cancel(query, res);
 		}
@@ -42,7 +42,7 @@ let myserver = http.createServer(function (req, res) {
 			sendResponse(404, "Day, time and name required.", res);
 		break;
 		case "/check":
-		if (query.day != undefined && query.time != undefined)
+		if (validateQuery(query, false))
 		{
 			check(query, res);
 		}
@@ -61,6 +61,16 @@ function sendResponse(status, message, res)
 	res.writeHead(status, {'Content-Type': 'text/plain'});
 	res.write(message);
 	res.end();
+}
+
+function validateQuery(query, nameRequired)
+{
+	const required = ["day", "time"];
+	if (nameRequired)
+	{
+		required.push("name");
+	}
+	return required.every(field => query[field] != undefined);
 }
 
 function checkDay(query)
