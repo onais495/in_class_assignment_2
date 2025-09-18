@@ -70,7 +70,6 @@ function check(query, res)
 	//then check fi the given time exists in the array for that day
 	if (availableTimes[query.day] != undefined)
 		{
-		console.log(availableTimes[query.day]);
 		if (availableTimes[query.day].some(time => time == query.time))
 		{
 			sendResponse(200, "Available", res);
