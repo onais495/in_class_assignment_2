@@ -33,7 +33,7 @@ let myserver = http.createServer(function (req, res) {
 				schedule(query, res);
 			}
 			else
-				sendResponse(400, "Day, time and name required.", res);
+				sendResponse(404, "Day, time and name required.", res);
 			break;
 		case "/cancel":
 			if (query.name != undefined)
@@ -41,7 +41,7 @@ let myserver = http.createServer(function (req, res) {
 				cancel(query, res);
 			}
 			else
-				sendResponse(400, "Day, time and name required.", res);
+				sendResponse(404, "Day, time and name required.", res);
 			break;
 		case "/check":
 			check(query, res);
@@ -51,7 +51,7 @@ let myserver = http.createServer(function (req, res) {
 	}
 	}
 	else
-		sendResponse(400, "Day and time required.". res);
+		sendResponse(404, "Day and time required.". res);
 	}
 );
 
