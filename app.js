@@ -22,7 +22,7 @@ let myserver = http.createServer(function (req, res) {
 	//Store the pathname in pathName
 	const pathName = parsedURL.pathname;
 
-	//route the request accouting for edge cases such as missing day, time or name
+	//route the request accounting for edge cases such as missing day, time or name
 	//or unknown pathnames
 	switch (pathName){
 		case "/schedule":
@@ -63,6 +63,8 @@ function sendResponse(status, message, res)
 	res.end();
 }
 
+//Check if the day, time or name are missing from the query
+//nameRequired checks if validateqQuery is being called from schedule, cancel or check
 function validateQuery(query, nameRequired)
 {
 	const required = ["day", "time"];
@@ -80,6 +82,7 @@ function checkDay(query)
 	else 
 		return true;
 }
+
 //Check if an appointment is available
 function check(query, res)
 {
