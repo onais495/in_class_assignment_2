@@ -24,44 +24,41 @@ let myserver = http.createServer(function (req, res) {
 
 	//route the request accouting for edge cases such as missing day, time or name
 	//or unknown pathnames
-	if (query.day != undefined && query.time != undefined)
-	{
-		switch (pathName){
+	switch (pathName){
 		case "/schedule":
-			if (query.name != undefined)
-			{
-				schedule(query, res);
-			}
-			else
-				sendResponse(404, "Day, time and name required.", res);
-			break;
+		if (query.name != undefined && query.day != undefined && query.time != undefined)
+		{
+			schedule(query, res);
+		}
+		else
+			sendResponse(404, "Day, time and name required.", res);
+		break;
 		case "/cancel":
-			if (query.name != undefined)
-			{
-				cancel(query, res);
-			}
-			else
-				sendResponse(404, "Day, time and name required.", res);
-			break;
+		if (query.name != undefined && query.day != undefined && query.time != undefined)
+		{
+			cancel(query, res);
+		}
+		else
+			sendResponse(404, "Day, time and name required.", res);
+		break;
 		case "/check":
+		if (query.day != undefined && query.time != undefined)
+		{
 			check(query, res);
-			break;
+		}
+		else
+			sendResponse(404, "Day and time required.", res);
+		break;
 		default:
 			sendResponse(404, "pathname unknown", res);
 	}
-	}
-	else
-		sendResponse(404, "Day and time required.". res);
 	}
 );
 
 //This function will handle sending all responses to the user
 function sendResponse(status, message, res)
 {
-	//res.writeHead(status, {'Content-Type': 'text/plain'});
-	//res.write(message);
-	//res.end();
-	res.writeHead(status,{'content-type':'text/plain'});
+	res.writeHead(status, {'Content-Type': 'text/plain'});
 	res.write(message);
 	res.end();
 }
