@@ -19,61 +19,51 @@ let myserver = http.createServer(function (req, res) {
 	let parsedURL = url.parse(req.url, true);
 	//Store the parsed query in query
 	const query = parsedURL.query;
+	//Store the pathname in pathName
 	const pathName = parsedURL.pathname;
 
-	//We can either use if else or switch
-
-	/*if (pathName == "/schedule")
-		schedule();
-	else if  (pathName == "/cancel")
-		cancel();
-	else 
-		error();*/
-
-	switch (pathName){
+	//route the request accouting for edge cases such as missing day, time or name
+	//or unknown pathnames
+	if (query.day != undefined && query.time != undefined)
+	{
+		switch (pathName){
 		case "/schedule":
-			if (query.name != undefined && query.day != undefined && query.time != undefined)
+			if (query.name != undefined)
 			{
 				schedule(query, res);
 			}
 			else
-				sendResponse(400, "Day, time and name required for scheduling appointment", res);
+				sendResponse(400, "Day, time and name required.", res);
 			break;
 		case "/cancel":
-			if (query.name != undefined && query.day != undefined && query.time != undefined)
+			if (query.name != undefined)
 			{
 				cancel(query, res);
 			}
 			else
-				sendResponse(400, "Day, time and name required for cancelling appoitment", res);
+				sendResponse(400, "Day, time and name required.", res);
 			break;
 		case "/check":
-			if (query.day != undefined && query.time != undefined)
-			{
-				check(query, res);
-			}
-			else
-				sendResponse(400, "Day and time required to check available appointments", res);
+			check(query, res);
 			break;
 		default:
 			sendResponse(404, "pathname unknown", res);
 	}
-	/*res.writeHead(200, {'Content-Type': 'text/html'});
-	res.write(`<html> <body> <p> <strong> Received </strong> </p> </body> </html>`); //write (send) a response to the clien
-	console.log(req.url);*/
+	}
+	else
+		sendResponse(400, "Day and time required.". res);
+	
+
 	}
 );
 
-//This function will check if there is availble day or time in availbleTimes
-/*function checkElement(available, query)
-{
-	return available.some(element => element == query);
-}*/
-
+//Check if an appointment is available
 function check(query, res)
 {
-	//check if there is an availble day and time
+	//first check if the day exists in availablTimes to avoid undefined errors
+	//then check fi the given time exists in the array for that day
 	if (availableTimes[query.day] != undefined)
+		console.log(availableTimes(query.day));
 		if (availableTimes[query.day].some(time => time == query.time))
 		{
 			sendResponse(200, "Available", res);
@@ -85,52 +75,41 @@ function check(query, res)
 }
 	
 
-//This function will send a response to the user
+//This function will handle sending all responses to the user
 function sendResponse(status, message, res)
 {
 	res.writeHead(status, {'Content-Type': 'text/plain'});
-	res.write(message); //write (send) a response to the clien
+	res.write(message);
 	res.end();
 }
 
 function schedule(query, res)
 {
-	//alternate way to write the function
-	/*
-		if availableTimes[query.day].some(function (element) {
-	return element == queryObj.time;
-	})
-	}*/
-
+	//check if a certain time exists in availableTimes on a specific day
+	//if it does, remove if from availbleTimes and add an appointment using 
+	//the name, day and time from the query
 	if (availableTimes[query.day].some(time => time == query.time))
-	//if (checkElement(availableTimes[query.day], query.time))
 	{
 		for (let i = 0; i < availableTimes[query.day].length; i++)
 		{
 			if (availableTimes[query.day][i] == query.time)
 			{
-				console.log("i "+i);
-				console.log("q time "+query.time);
-				console.log()
-				console.log(availableTimes[query.day][i])
 				availableTimes[query.day].splice(i, 1);
-				console.log("length "+availableTimes[query.day].length);
 				appointments.push({name: query.name, day: query.day, time: query.time});
-				console.log(appointments);
-				console.log(availableTimes);
 				sendResponse(200, "Reserved", res);
 				return;
 			}
 		}
-		
 	}
 	else
 		sendResponse(404, "Could not schedule", res);
 
 }
-
+//cancel the appointment if it exists
 function cancel(query, res)
 {
+	//check if the appointment exists, 
+	//if it does, remove if from appointments and add the time back to availableTImes
 	if (appointments.some(element => element.name == query.name && element.day == query.day && element.time == query.time))	
 		for (let i = 0; i < appointments.length; i++)
 		{
