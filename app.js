@@ -58,7 +58,10 @@ let myserver = http.createServer(function (req, res) {
 //This function will handle sending all responses to the user
 function sendResponse(status, message, res)
 {
-	res.writeHead(status, {'Content-Type': 'text/plain'});
+	//res.writeHead(status, {'Content-Type': 'text/plain'});
+	//res.write(message);
+	//res.end();
+	res.writeHead(status,{'content-type':'text/plain'});
 	res.write(message);
 	res.end();
 }
