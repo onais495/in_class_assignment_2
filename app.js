@@ -52,10 +52,16 @@ let myserver = http.createServer(function (req, res) {
 	}
 	else
 		sendResponse(400, "Day and time required.". res);
-	
-
 	}
 );
+
+//This function will handle sending all responses to the user
+function sendResponse(status, message, res)
+{
+	res.writeHead(status, {'Content-Type': 'text/plain'});
+	res.write(message);
+	res.end();
+}
 
 //Check if an appointment is available
 function check(query, res)
@@ -72,15 +78,6 @@ function check(query, res)
 		}
 	else
 		sendResponse(404, "Not Available", res);
-}
-	
-
-//This function will handle sending all responses to the user
-function sendResponse(status, message, res)
-{
-	res.writeHead(status, {'Content-Type': 'text/plain'});
-	res.write(message);
-	res.end();
 }
 
 function schedule(query, res)
