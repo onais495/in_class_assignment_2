@@ -57,7 +57,7 @@ function sendResponse(status, message, res)
 	res.end();
 }
 
-//check if the first character of the query day is uppercase, if not capitalize it and make the rest lowercase
+//Capitalize the first character of day and make the rest of the characters lowercase
 //then check if the day exists in availableTimes and return true or false
 function checkDay(query, res)
 {
@@ -73,6 +73,7 @@ function checkDay(query, res)
 
 //check if the query time is in the correct format
 //if the time is 5 characters long and starts with 0, remove 0
+//use the positioning of : and the length of the query time string to find out if the time is in the correct format
 function checkTime(query, res)
 {
 	if (query.time.length == 5 && query.time.charAt(0) == '0')
@@ -89,6 +90,8 @@ function checkTime(query, res)
 	}
 }
 
+//check if the name is empty
+//if not, capitalize the first character and make the rest of the characters lowercase
 function checkName(query, res)
 {
 	if (query.name.length == 0)
@@ -103,7 +106,7 @@ function checkName(query, res)
 	}
 }
 
-//Check if the day, time or name are missing from the query
+//Check if the day, time or name are missing from the query using the every method on required array
 //nameRequired checks if validateqQuery is being called from schedule, cancel or check
 //if query is valid, check if the day, time or name are in correct format
 function validateQuery(query, nameRequired, res)
@@ -149,9 +152,8 @@ function validateQuery(query, nameRequired, res)
 //Check if an appointment is available
 function check(query, res)
 {
-	//first check if the day exists in availablTimes to avoid undefined errors
-	//then check fi the given time exists in the array for that day
-	
+	//Check if the given time exists in the availableTimes for that day, if it does, send "Available"
+	//otherwise send 404, "Not Available"
 	if (availableTimes[query.day].some(time => time == query.time))
 	{
 		sendResponse(200, "Available", res);
@@ -161,11 +163,13 @@ function check(query, res)
 	sendResponse(404, "Not Available", res);
 }
 
+//Schedule an appointment if the time is available
 function schedule(query, res)
 {
 	//Check if a certain time exists in availableTimes on a specific day
 	//if it does, remove if from availbleTimes and add an appointment using 
 	//the name, day and time from the query
+	//if the time does not exist, send 404, "Could not schedule"
 	if (availableTimes[query.day].some(time => time == query.time))
 	{
 		for (let i = 0; i < availableTimes[query.day].length; i++)
@@ -187,7 +191,7 @@ function schedule(query, res)
 function cancel(query, res)
 {
 	//check if the appointment exists, 
-	//if it does, remove if from appointments and add the time back to availableTImes
+	//if it does, remove if from appointments and add the time back to availableTimes, and send responses based on the result
 	if (appointments.some(element => element.name == query.name && element.day == query.day && element.time == query.time))	
 	{
 		for (let i = 0; i < appointments.length; i++)
