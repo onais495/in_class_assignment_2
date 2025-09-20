@@ -97,7 +97,10 @@ function checkDay(query, res)
 function checkTime(query, res)
 {
 	if (query.time.length == 5 && query.time.charAt(0) == '0')
-	query.time = query.time.slice(1);
+	{
+		query.time = query.time.slice(1);
+	}
+	
 	if ((query.time.length == 4 && query.time.charAt(1) == ':') || (query.time.length == 5 && query.time.charAt(2) == ':'))
 	return true;
 	else 
