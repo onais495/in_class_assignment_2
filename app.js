@@ -122,8 +122,8 @@ function checkName(query, res)
 		if (query.name.charAt(0) != query.name.charAt(0).toUpperCase())
 		{
 			query.name = query.name.charAt(0).toUpperCase() + query.name.slice(1).toLowerCase();
-			return true;
 		}
+		return true;
 	}
 }
 
