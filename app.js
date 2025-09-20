@@ -75,13 +75,20 @@ function validateQuery(query, nameRequired)
 	return required.every(field => query[field] != undefined);
 }
 
+//check if the first character of the day is uppercase, if not capitalize it and make the rest lowercase
+//then check if the day exists in availableTimes
 function checkDay(query)
 {
+	if (query.day.charAt(0) != query.day.charAt(0).toUpperCase())
+	{
+		query.day = query.day.charAt(0).toUpperCase() + query.day.slice(1).toLowerCase();
+	}
 	if (availableTimes[query.day] == undefined)
-		return false;
+	return false;
 	else 
-		return true;
+	return true;
 }
+
 
 //Check if an appointment is available
 function check(query, res)
