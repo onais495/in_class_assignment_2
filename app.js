@@ -110,26 +110,41 @@ function checkTime(query, res)
 	}
 }
 
+function checkName(query, res)
+{
+	if (query.name.length == 0)
+	{
+		sendResponse(404, "Name cannot be empty", res);
+		return false;
+	}
+	else
+	{
+		if (query.name.charAt(0) != query.name.charAt(0).toUpperCase())
+		{
+			query.name = query.name.charAt(0).toUpperCase() + query.name.slice(1).toLowerCase();
+			return true;
+		}
+	}
+}
+
 //Check if an appointment is available
 function check(query, res)
 {
 	//first check if the day exists in availablTimes to avoid undefined errors
 	//then check fi the given time exists in the array for that day
-	if (checkDay(query, res))
+	if (checkDay(query, res) && checkTime(query, res))
 	{
-		if (checkTime(query, res))
+		if (availableTimes[query.day].some(time => time == query.time))
 		{
-			if (availableTimes[query.day].some(time => time == query.time))
-			{
-				sendResponse(200, "Available", res);
-				console.log(availableTimes);
-				return;
-			}
-			else
-			sendResponse(404, "Not Available", res);
+			sendResponse(200, "Available", res);
+			console.log(availableTimes);
+			return;
 		}
-	}	
-}
+		else
+		sendResponse(404, "Not Available", res);
+	}
+}	
+
 
 function schedule(query, res)
 {
@@ -137,56 +152,52 @@ function schedule(query, res)
 	//then check if a certain time exists in availableTimes on a specific day
 	//if it does, remove if from availbleTimes and add an appointment using 
 	//the name, day and time from the query
-	if (checkDay(query, res))
+	if (checkDay(query, res) && checkName(query,res) && checkTime(query, res))
 	{
-		if (checkTime(query, res))
+		if (availableTimes[query.day].some(time => time == query.time))
 		{
-			if (availableTimes[query.day].some(time => time == query.time))
+			for (let i = 0; i < availableTimes[query.day].length; i++)
 			{
-				for (let i = 0; i < availableTimes[query.day].length; i++)
+			if (availableTimes[query.day][i] == query.time)
 				{
-					if (availableTimes[query.day][i] == query.time)
-					{
-						availableTimes[query.day].splice(i, 1);
-						appointments.push({name: query.name, day: query.day, time: query.time});
-						sendResponse(200, "Reserved", res);
-						return;
-					}
+					availableTimes[query.day].splice(i, 1);
+					appointments.push({name: query.name, day: query.day, time: query.time});
+					sendResponse(200, "Reserved", res);
+					return;
 				}
 			}
-			else
-			sendResponse(404, "Could not schedule", res);
 		}
+		else
+		sendResponse(404, "Could not schedule", res);
 	}
 }
+
 //cancel the appointment if it exists
 function cancel(query, res)
 {
 	//check if the appointment exists, 
 	//if it does, remove if from appointments and add the time back to availableTImes
-	if (checkDay(query, res))
+	if (checkDay(query, res) && checkName(query,res) && checkTime(query, res))
 	{
-		if (checkTime(query, res))
+		if (appointments.some(element => element.name == query.name && element.day == query.day && element.time == query.time))	
 		{
-			if (appointments.some(element => element.name == query.name && element.day == query.day && element.time == query.time))	
+			for (let i = 0; i < appointments.length; i++)
 			{
-				for (let i = 0; i < appointments.length; i++)
+				if (appointments[i].name == query.name && appointments[i].day == query.day && appointments[i].time == query.time)
 				{
-					if (appointments[i].name == query.name && appointments[i].day == query.day && appointments[i].time == query.time)
-					{
-						appointments.splice(i, 1);
-						availableTimes[query.day].push(query.time);
-						console.log(appointments);
-						console.log(availableTimes);
-						sendResponse(200, "Appointment has been cancelled", res);
-						return;
-					}
+					appointments.splice(i, 1);
+					availableTimes[query.day].push(query.time);
+					console.log(appointments);
+					console.log(availableTimes);
+					sendResponse(200, "Appointment has been cancelled", res);
+					return;
 				}
 			}
-			else
-			sendResponse(404, "Appointment not found", res);
 		}
+		else
+		sendResponse(404, "Appointment not found", res);
 	}
 }
+
 
 myserver.listen(80); //the server object listens on port 80
