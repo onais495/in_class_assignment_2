@@ -79,10 +79,7 @@ function validateQuery(query, nameRequired)
 //then check if the day exists in availableTimes and return true or false
 function checkDay(query, res)
 {
-	if (query.day.charAt(0) != query.day.charAt(0).toUpperCase())
-	{
-		query.day = query.day.charAt(0).toUpperCase() + query.day.slice(1).toLowerCase();
-	}
+	query.day = query.day.charAt(0).toUpperCase() + query.day.slice(1).toLowerCase();
 	if (availableTimes[query.day] == undefined)
 	{
 		sendResponse(404, "Incorrect day", res);
