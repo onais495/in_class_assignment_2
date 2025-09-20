@@ -75,93 +75,115 @@ function validateQuery(query, nameRequired)
 	return required.every(field => query[field] != undefined);
 }
 
-//check if the first character of the day is uppercase, if not capitalize it and make the rest lowercase
-//then check if the day exists in availableTimes
-function checkDay(query)
+//check if the first character of the query day is uppercase, if not capitalize it and make the rest lowercase
+//then check if the day exists in availableTimes and return true or false
+function checkDay(query, res)
 {
 	if (query.day.charAt(0) != query.day.charAt(0).toUpperCase())
 	{
 		query.day = query.day.charAt(0).toUpperCase() + query.day.slice(1).toLowerCase();
 	}
 	if (availableTimes[query.day] == undefined)
-	return false;
+	{
+		sendResponse(404, "Incorrect day", res);
+		return false;
+	}
 	else 
 	return true;
 }
 
+//check if the query time is in the correct format
+//if the time is 5 characters long and starts with 0, remove 0
+function checkTime(query, res)
+{
+	if (query.time.length == 5 && query.time.charAt(0) == '0')
+	query.time = query.time.slice(1);
+	if ((query.time.length == 4 && query.time.charAt(1) == ':') || (query.time.length == 5 && query.time.charAt(2) == ':'))
+	return true;
+	else 
+	{
+		sendResponse(404, "Incorrect time", res);
+		return false;
+	}
+}
 
 //Check if an appointment is available
 function check(query, res)
 {
 	//first check if the day exists in availablTimes to avoid undefined errors
 	//then check fi the given time exists in the array for that day
-	if (checkDay(query))
+	if (checkDay(query, res))
+	{
+		if (checkTime(query, res))
 		{
-		if (availableTimes[query.day].some(time => time == query.time))
-		{
-			sendResponse(200, "Available", res);
-			console.log(availableTimes);
-			return;
-		}
-		else
+			if (availableTimes[query.day].some(time => time == query.time))
+			{
+				sendResponse(200, "Available", res);
+				console.log(availableTimes);
+				return;
+			}
+			else
 			sendResponse(404, "Not Available", res);
-			return;
-	}
-	else
-	sendResponse(404, "Incorrect day", res);
-	return;
+		}
+	}	
 }
 
 function schedule(query, res)
 {
-	//check if the given day exists, 
+	//check if the given day exists, check if the time is in correct format
 	//then check if a certain time exists in availableTimes on a specific day
 	//if it does, remove if from availbleTimes and add an appointment using 
 	//the name, day and time from the query
-	if (checkDay(query))
+	if (checkDay(query, res))
 	{
-		if (availableTimes[query.day].some(time => time == query.time))
+		if (checkTime(query, res))
 		{
-			for (let i = 0; i < availableTimes[query.day].length; i++)
+			if (availableTimes[query.day].some(time => time == query.time))
 			{
-				if (availableTimes[query.day][i] == query.time)
+				for (let i = 0; i < availableTimes[query.day].length; i++)
 				{
-					availableTimes[query.day].splice(i, 1);
-					appointments.push({name: query.name, day: query.day, time: query.time});
-					sendResponse(200, "Reserved", res);
-					return;
+					if (availableTimes[query.day][i] == query.time)
+					{
+						availableTimes[query.day].splice(i, 1);
+						appointments.push({name: query.name, day: query.day, time: query.time});
+						sendResponse(200, "Reserved", res);
+						return;
+					}
 				}
 			}
-		}
-		else
+			else
 			sendResponse(404, "Could not schedule", res);
+		}
 	}
-	else
-		sendResponse(404, "Incorrect Day", res);
-	
-	
-
 }
 //cancel the appointment if it exists
 function cancel(query, res)
 {
 	//check if the appointment exists, 
 	//if it does, remove if from appointments and add the time back to availableTImes
-	if (appointments.some(element => element.name == query.name && element.day == query.day && element.time == query.time))	
-		for (let i = 0; i < appointments.length; i++)
+	if (checkDay(query, res))
+	{
+		if (checkTime(query, res))
 		{
-			if (appointments[i].name == query.name && appointments[i].day == query.day && appointments[i].time == query.time)
+			if (appointments.some(element => element.name == query.name && element.day == query.day && element.time == query.time))	
 			{
-				appointments.splice(i, 1);
-				availableTimes[query.day].push(query.time);
-				console.log(appointments);
-				console.log(availableTimes);
-				sendResponse(200, "Appointment has been cancelled", res);
-				return;
+				for (let i = 0; i < appointments.length; i++)
+				{
+					if (appointments[i].name == query.name && appointments[i].day == query.day && appointments[i].time == query.time)
+					{
+						appointments.splice(i, 1);
+						availableTimes[query.day].push(query.time);
+						console.log(appointments);
+						console.log(availableTimes);
+						sendResponse(200, "Appointment has been cancelled", res);
+						return;
+					}
+				}
 			}
-		}
-		else
+			else
 			sendResponse(404, "Appointment not found", res);
+		}
+	}
 }
 
 myserver.listen(80); //the server object listens on port 80
