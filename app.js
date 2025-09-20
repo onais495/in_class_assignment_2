@@ -61,10 +61,7 @@ function sendResponse(status, message, res)
 //then check if the day exists in availableTimes and return true or false
 function checkDay(query, res)
 {
-	if (query.day.charAt(0) != query.day.charAt(0).toUpperCase() || query.day.slice(1) != query.day.slice(1).toLowerCase())
-	{
-		query.day = query.day.charAt(0).toUpperCase() + query.day.slice(1).toLowerCase();
-	}
+	query.day = query.day.charAt(0).toUpperCase() + query.day.slice(1).toLowerCase();
 	if (availableTimes[query.day] == undefined)
 	{
 		sendResponse(404, "Incorrect day", res);
@@ -101,10 +98,7 @@ function checkName(query, res)
 	}
 	else
 	{
-		if (query.name.charAt(0) != query.name.charAt(0).toUpperCase())
-		{
-			query.name = query.name.charAt(0).toUpperCase() + query.name.slice(1).toLowerCase();
-		}
+		query.name = query.name.charAt(0).toUpperCase() + query.name.slice(1).toLowerCase();
 		return true;
 	}
 }
