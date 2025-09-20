@@ -26,19 +26,19 @@ let myserver = http.createServer(function (req, res) {
 	//or unknown pathnames
 	switch (pathName){
 		case "/schedule":
-		if (validateQuery(query, true))
+		if (validateQuery(query, true, res))
 		{
 			schedule(query, res);
 		}
 		break;
 		case "/cancel":
-		if (validateQuery(query, true))
+		if (validateQuery(query, true, res))
 		{
 			cancel(query, res);
 		}
 		break;
 		case "/check":
-		if (validateQuery(query, false))
+		if (validateQuery(query, false, res))
 		{
 			check(query, res);
 		}
