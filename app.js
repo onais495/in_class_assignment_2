@@ -134,7 +134,6 @@ function check(query, res)
 		if (availableTimes[query.day].some(time => time == query.time))
 		{
 			sendResponse(200, "Available", res);
-			console.log(availableTimes);
 			return;
 		}
 		else
