@@ -1,0 +1,3 @@
+I only used w3schools.com to learn about the .every method of arrays for this assignment. Here is the webpage I used:
+https://www.w3schools.com/jsref/jsref_every.asp
+I did not use any other outside resources or references
