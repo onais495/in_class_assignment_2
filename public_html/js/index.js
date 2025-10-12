@@ -28,7 +28,7 @@ function scheduleAppointment()
         }
         else
         {
-            errorHandler("Status: " + this.status + this.responseText);
+            errorHandler("Status: " + this.status + " " + this.responseText);
         }
     };
     AJAXObj.onerror = function()
@@ -50,7 +50,7 @@ function cancelAppointment()
         }
         else
         {
-            errorHandler("Status: " + this.status + this.responseText);
+            errorHandler("Status: " + this.status + " " + this.responseText);
         }
         };
     AJAXObj.onerror = function()
@@ -72,7 +72,7 @@ function checkAvailability()
         }
         else
         {
-            errorHandler("Status: " + this.status + this.responseText);
+            errorHandler("Status: " + this.status + " " + this.responseText);
         }
     };
     AJAXObj.onerror = function()
