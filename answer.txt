@@ -1,0 +1,3 @@
+Q1: What does -R mean
+Answer: The -R allows all the files within the public_html directory to be copied
+The cp command is used by itself to copy a file but -R is needed to copy all the files in a folder.
