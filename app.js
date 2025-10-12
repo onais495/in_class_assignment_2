@@ -22,7 +22,7 @@ let myserver = http.createServer(function (req, res) {
 	const query = parsedURL.query;
 	//Store the pathname in pathName
 	const pathName = parsedURL.pathname;
-	let fileName = '.' + pathName;
+	let fileName = '.' + '/public_html' + pathName;
 
 	//route the request accounting for edge cases such as missing day, time or name
 	//or unknown pathnames
