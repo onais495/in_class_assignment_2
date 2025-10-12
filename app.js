@@ -213,7 +213,7 @@ function cancel(query, res)
 	sendResponse(404, "Appointment not found", res);
 }
 
-function sendFile(filePath, res)
+function sendFile(fileName, res)
 {
 	let contentType = 'text/html';
 	fs.readFile(fileName, function(err, data)
