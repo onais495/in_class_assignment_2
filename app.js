@@ -27,6 +27,10 @@ let myserver = http.createServer(function (req, res) {
 
 	//route the request accounting for edge cases such as missing day, time or name
 	//or unknown pathnames
+	if (pathName == '/')
+	{
+		fileName = './public_html/index.html';
+	}
 	switch (pathName){
 		case "/schedule":
 		if (validateQuery(query, true, res))
