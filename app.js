@@ -44,7 +44,7 @@ let myserver = http.createServer(function (req, res) {
 		}
 		break;
 		default:
-			sendResponse(404, "pathname unknown", res);
+			sendFile(pathName, res);
 	}
 	}
 );
@@ -209,6 +209,12 @@ function cancel(query, res)
 	}
 	else
 	sendResponse(404, "Appointment not found", res);
+}
+
+function sendFile(filePath, res)
+{
+	let contentType = 'text/html';
+	
 }
 
 myserver.listen(80); //the server object listens on port 80
