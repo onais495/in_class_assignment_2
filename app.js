@@ -218,6 +218,7 @@ function cancel(query, res)
 	sendResponse(404, "Appointment not found", 'text/html',res);
 }
 
+//set the content type based on the file extension
 function setContentType(fileName)
 {
 	const ext = path.extname(fileName);
@@ -242,15 +243,16 @@ function setContentType(fileName)
 	return contentType;
 }
 
+//call back function to read and send the file
 function sendFile(fileName, res)
 {
 	const ext = path.extname(fileName);
-	contentType = setContentType(fileName);
+	let contentType = setContentType(fileName);
 	fs.readFile(fileName, function(err, data)
 	{
 		if (err)
 		{
-			sendResponse(404, "Error 404: resource not found", contentType, res);
+			sendResponse(404, "Error 404: resource not found", 'text/html', res);
 		}
 		else
 		{
