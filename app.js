@@ -1,6 +1,7 @@
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
+const path = require('path');
 
 const availableTimes = {
     Monday: ["1:00", "1:30", "2:00", "2:30", "3:00", "3:30", "4:00", "4:30"],
@@ -66,7 +67,7 @@ function checkDay(query, res)
 	query.day = query.day.charAt(0).toUpperCase() + query.day.slice(1).toLowerCase();
 	if (availableTimes[query.day] == undefined)
 	{
-		sendResponse(404, "Incorrect day", res);
+		sendResponse(404, "Incorrect day", 'text/html',res);
 		return false;
 	}
 	else 
@@ -87,7 +88,7 @@ function checkTime(query, res)
 	return true;
 	else 
 	{
-		sendResponse(404, "Incorrect time", res);
+		sendResponse(404, "Incorrect time", 'text/html',res);
 		return false;
 	}
 }
@@ -98,7 +99,7 @@ function checkName(query, res)
 {
 	if (query.name.length == 0)
 	{
-		sendResponse(404, "Name cannot be empty", res);
+		sendResponse(404, "Name cannot be empty", 'text/html',res);
 		return false;
 	}
 	else
@@ -123,11 +124,11 @@ function validateQuery(query, nameRequired, res)
 	{
 		if (nameRequired)
 		{
-			sendResponse(404, "Missing day, time or name", res);
+			sendResponse(404, "Missing day, time or name", 'text/html',res);
 		}
 		else if (!nameRequired)
 		{
-			sendResponse(404, "Missing day or time", res);
+			sendResponse(404, "Missing day or time", 'text/html',res);
 		}
 		return false;
 	}
@@ -158,11 +159,11 @@ function check(query, res)
 	//otherwise send 404, "Not Available"
 	if (availableTimes[query.day].some(time => time == query.time))
 	{
-		sendResponse(200, "Available", res);
+		sendResponse(200, "Available", 'text/html',res);
 		return;
 	}
 	else
-	sendResponse(404, "Not Available", res);
+	sendResponse(404, "Not Available", 'text/html',res);
 }
 
 //Schedule an appointment if the time is available
@@ -180,13 +181,13 @@ function schedule(query, res)
 			{
 				availableTimes[query.day].splice(i, 1);
 				appointments.push({name: query.name, day: query.day, time: query.time});
-				sendResponse(200, "Reserved", res);
+				sendResponse(200, "Reserved", 'text/html',res);
 				return;
 			}
 		}
 	}
 	else
-	sendResponse(404, "Could not schedule", res);
+	sendResponse(404, "Could not schedule", 'text/html',res);
 }
 
 //cancel the appointment if it exists
@@ -204,18 +205,43 @@ function cancel(query, res)
 				availableTimes[query.day].push(query.time);
 				console.log(appointments);
 				console.log(availableTimes);
-				sendResponse(200, "Appointment has been cancelled", res);
+				sendResponse(200, "Appointment has been cancelled", 'text/html', res);
 				return;
 			}
 		}
 	}
 	else
-	sendResponse(404, "Appointment not found", res);
+	sendResponse(404, "Appointment not found", 'text/html',res);
+}
+
+function setContentType(fileName)
+{
+	const ext = path.extname(fileName);
+	switch (ext)
+	{
+		case '.html':
+			contentType = 'text/html';
+			break;
+		case '.js':
+			contentType = 'text/javascript';
+			break;
+		case '.css':
+			contentType = 'text/css';
+			break;
+		case '.json':
+			contentType = 'application/json';
+			break;
+		case '.txt':
+			contentType = 'text/plain';
+			break;
+	}
+	return contentType;
 }
 
 function sendFile(fileName, res)
 {
-	let contentType = 'text/html';
+	const ext = path.extname(fileName);
+	contentType = setContentType(fileName);
 	fs.readFile(fileName, function(err, data)
 	{
 		if (err)
