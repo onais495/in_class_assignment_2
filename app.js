@@ -1,5 +1,6 @@
 const http = require('http');
 const url = require('url');
+const fs = require('fs');
 
 const availableTimes = {
     Monday: ["1:00", "1:30", "2:00", "2:30", "3:00", "3:30", "4:00", "4:30"],
@@ -14,13 +15,14 @@ const appointments = [
 
 //create a server object:
 let myserver = http.createServer(function (req, res) {
-
+	
 	//parse the URL
 	let parsedURL = url.parse(req.url, true);
 	//Store the parsed query in query
 	const query = parsedURL.query;
 	//Store the pathname in pathName
 	const pathName = parsedURL.pathname;
+	let fileName = '.' + pathName;
 
 	//route the request accounting for edge cases such as missing day, time or name
 	//or unknown pathnames
@@ -44,15 +46,15 @@ let myserver = http.createServer(function (req, res) {
 		}
 		break;
 		default:
-			sendFile(pathName, res);
+			sendFile(fileName, res);
 	}
 	}
 );
 
 //This function will handle sending all responses to the user
-function sendResponse(status, message, res)
+function sendResponse(status, message, contentType, res)
 {
-	res.writeHead(status, {'Content-Type': 'text/plain'});
+	res.writeHead(status, {'Content-Type': contentType});
 	res.write(message);
 	res.end();
 }
@@ -214,7 +216,17 @@ function cancel(query, res)
 function sendFile(filePath, res)
 {
 	let contentType = 'text/html';
-	
+	fs.readFile(fileName, function(err, data)
+	{
+		if (err)
+		{
+			sendResponse(404, "Error 404: resource not found", contentType, res);
+		}
+		else
+		{
+			sendResponse(200, data, contentType, res);
+		}
+	})
 }
 
 myserver.listen(80); //the server object listens on port 80
